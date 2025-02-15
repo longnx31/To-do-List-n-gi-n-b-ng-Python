@@ -1,0 +1,37 @@
+import sys
+
+TODO_FILE = "todo.txt"
+
+def add_task(task):
+    with open(TODO_FILE, "a") as f:
+        f.write(task + "\n")
+    print(f"Added: {task}")
+
+def show_tasks():
+    try:
+        with open(TODO_FILE, "r") as f:
+            tasks = f.readlines()
+            if not tasks:
+                print("No tasks yet!")
+            else:
+                print("Your To-do List:")
+                for i, task in enumerate(tasks, 1):
+                    print(f"{i}. {task.strip()}")
+    except FileNotFoundError:
+        print("No tasks yet!")
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: python todo.py [add/show] [task]")
+        return
+
+    command = sys.argv[1]
+    if command == "add" and len(sys.argv) > 2:
+        add_task(" ".join(sys.argv[2:]))
+    elif command == "show":
+        show_tasks()
+    else:
+        print("Invalid command!")
+
+if __name__ == "__main__":
+    main()
