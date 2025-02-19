@@ -8,3 +8,4 @@ Clone project về máy:
 ```sh
 git clone https://github.com/<your-username>/todolist.git
 cd todolist
+python todo.py add "Mua sữa"
