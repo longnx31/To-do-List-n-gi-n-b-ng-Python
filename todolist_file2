@@ -1,0 +1,81 @@
+import os
+
+FILENAME = "tasks_status.txt"
+
+def load_tasks():
+    tasks = []
+    if os.path.exists(FILENAME):
+        with open(FILENAME, "r", encoding="utf-8") as f:
+            for line in f:
+                text, done = line.strip().rsplit("|", 1)
+                tasks.append({"text": text, "done": done == "1"})
+    return tasks
+
+def save_tasks(tasks):
+    with open(FILENAME, "w", encoding="utf-8") as f:
+        for task in tasks:
+            f.write(f"{task['text']}|{'1' if task['done'] else '0'}\n")
+
+def show_tasks(tasks):
+    print("\n📋 Danh sách công việc:")
+    if not tasks:
+        print("Danh sách trống!")
+    for idx, task in enumerate(tasks, 1):
+        status = "✔" if task["done"] else "❌"
+        print(f"{idx}. [{status}] {task['text']}")
+
+def main():
+    tasks = load_tasks()
+
+    while True:
+        print("\n1. Thêm công việc")
+        print("2. Hiển thị danh sách")
+        print("3. Đánh dấu hoàn thành")
+        print("4. Xóa công việc")
+        print("5. Thoát")
+        choice = input("👉 Chọn thao tác: ").strip()
+
+        if choice == "1":
+            text = input("Nhập công việc mới: ")
+            tasks.append({"text": text, "done": False})
+            save_tasks(tasks)
+            print("✅ Đã thêm.")
+
+        elif choice == "2":
+            show_tasks(tasks)
+
+        elif choice == "3":
+            show_tasks(tasks)
+            try:
+                idx = int(input("Số công việc cần đánh dấu hoàn thành: ")) - 1
+                if 0 <= idx < len(tasks):
+                    tasks[idx]["done"] = True
+                    save_tasks(tasks)
+                    print("👍 Đã đánh dấu hoàn thành.")
+                else:
+                    print("❌ Số không hợp lệ.")
+            except ValueError:
+                print("❌ Nhập số.")
+
+        elif choice == "4":
+            show_tasks(tasks)
+            try:
+                idx = int(input("Số công việc cần xóa: ")) - 1
+                if 0 <= idx < len(tasks):
+                    removed = tasks.pop(idx)
+                    save_tasks(tasks)
+                    print(f"🗑️ Đã xóa: {removed['text']}")
+                else:
+                    print("❌ Số không hợp lệ.")
+            except ValueError:
+                print("❌ Nhập số.")
+
+        elif choice == "5":
+            print("👋 Hẹn gặp lại!")
+            break
+
+        else:
+            print("❌ Lựa chọn không hợp lệ.")
+
+if __name__ == "__main__":
+    main()
